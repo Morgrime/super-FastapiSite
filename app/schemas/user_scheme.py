@@ -5,10 +5,13 @@ class UserBase(BaseModel):
     email: str
 
 class UserCreate(UserBase):
-    hashed_password: str
+    hashed_password: str | int
 
 class UserUpdate(UserBase):
-    hashed_password: str
+    hashed_password: str | int
+
+class UserDelete(BaseModel):
+    detail: str
 
 class User(UserBase):
     id: int

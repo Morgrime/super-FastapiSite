@@ -3,22 +3,32 @@ from sqlalchemy.future import select
 from models.portfolio import User
 from database.session import SessionLocal
 
+
+# создание пользователя
 async def create_user(session: AsyncSession, 
                       username: str,
                       hashed_password: str,
                       email: str):
-    new_user = User(username, hashed_password, email)
+    new_user = User(username=username, hashed_password=hashed_password, email=email)
     session.add(new_user)
     await session.commit()
     await session.refresh(new_user)
     return new_user
 
 
+# возврат одного
 async def get_user(session: AsyncSession, user_id: int):
     result = await session.execute(select(User).filter(User.id==user_id))
-    return result.scalar_one_or_none
+    return result.scalar_one_or_none()
 
 
+# возврат всех
+async def get_all_users(session: AsyncSession):
+    result = await session.execute(select(User))
+    return result.scalars().all()
+
+
+# апдейт данных пользователя
 async def update_user(session: AsyncSession, 
                       user_id: int,
                       username: str,
@@ -34,6 +44,7 @@ async def update_user(session: AsyncSession,
     return user
 
 
+# удаление пользователя
 async def delete_user(session: AsyncSession, user_id: int):
     user = await get_user(session, user_id)
     if user:
