@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from app.models.portfolio import User
-from app.database.session import SessionLocal
+from models.portfolio import User
+from database.session import SessionLocal
 
 async def create_user(session: AsyncSession, 
                       username: str,
