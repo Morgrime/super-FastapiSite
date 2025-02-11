@@ -11,16 +11,18 @@ async def get_session():
     async with SessionLocal() as session:
         yield session
 
+
 # создание пользователя
 @router.post("/users/", response_model=UserCreate, tags=["CRUD"])
 async def create_user_route(user: UserCreate,
                             session: AsyncSession = Depends(get_session)):
     hashed_password_str = str(user.hashed_password)
     try:
-        new_user = await create_user(session,
-                                    user.username, 
-                                    hashed_password_str,
-                                    user.email)
+        new_user = await create_user(
+            session,
+            user.username, 
+            hashed_password_str,
+            user.email)
         return new_user
     except HTTPException as e:
         raise e
