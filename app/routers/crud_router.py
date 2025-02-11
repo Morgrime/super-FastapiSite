@@ -20,7 +20,7 @@ async def create_user_route(user: UserCreate,
     try:
         new_user = await create_user(
             session,
-            user.username, 
+            user.username,
             hashed_password_str,
             user.email)
         return new_user

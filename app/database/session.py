@@ -6,5 +6,7 @@ DATABASE_URL = f"sqlite+aiosqlite:///{os.path.join(os.getcwd(), 'database.db')}"
 
 engine = create_async_engine(DATABASE_URL, echo=True)
 SessionLocal = sessionmaker(
-    autoflush=False, bind=engine, class_=AsyncSession
+    autoflush=False,
+    bind=engine,
+    class_=AsyncSession
 )

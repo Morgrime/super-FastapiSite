@@ -1,25 +1,26 @@
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException
 from sqlalchemy.future import select
 from models.portfolio import User
 
 
 # создание пользователя
-async def create_user(session: AsyncSession, 
+async def create_user(session: AsyncSession,
                       username: str,
                       hashed_password: str,
                       email: str):
     try:
-        new_user = User(username=username, 
-                        hashed_password=hashed_password, 
+        new_user = User(username=username,
+                        hashed_password=hashed_password,
                         email=email)
         session.add(new_user)
         await session.commit()
         await session.refresh(new_user)
         return new_user
-    except:
+    except IntegrityError:
         await session.rollback()
-        raise HTTPException(status_code=400, 
+        raise HTTPException(status_code=400,
                             detail="Username or email already exists")
 
 
@@ -36,7 +37,7 @@ async def get_all_users(session: AsyncSession):
 
 
 # апдейт данных пользователя
-async def update_user(session: AsyncSession, 
+async def update_user(session: AsyncSession,
                       user_id: int,
                       username: str,
                       hashed_password: str,
