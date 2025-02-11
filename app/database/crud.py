@@ -1,4 +1,5 @@
 from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi import HTTPException
 from sqlalchemy.future import select
 from models.portfolio import User
 from database.session import SessionLocal
@@ -9,11 +10,15 @@ async def create_user(session: AsyncSession,
                       username: str,
                       hashed_password: str,
                       email: str):
-    new_user = User(username=username, hashed_password=hashed_password, email=email)
-    session.add(new_user)
-    await session.commit()
-    await session.refresh(new_user)
-    return new_user
+    try:    
+        new_user = User(username=username, hashed_password=hashed_password, email=email)
+        session.add(new_user)
+        await session.commit()
+        await session.refresh(new_user)
+        return new_user
+    except:
+        await session.rollback()
+        raise HTTPException(status_code=400, detail="Username or email already exists")
 
 
 # возврат одного

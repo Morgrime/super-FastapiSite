@@ -16,11 +16,14 @@ async def get_session():
 async def create_user_route(user: UserCreate,
                             session: AsyncSession = Depends(get_session)):
     hashed_password_str = str(user.hashed_password)
-    new_user = await create_user(session,
-                                 user.username, 
-                                 hashed_password_str,
-                                 user.email)
-    return new_user
+    try:
+        new_user = await create_user(session,
+                                    user.username, 
+                                    hashed_password_str,
+                                    user.email)
+        return new_user
+    except HTTPException as e:
+        raise e
 
 
 # получение пользователя по id
