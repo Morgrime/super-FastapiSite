@@ -24,9 +24,15 @@ async def create_user(session: AsyncSession,
                             detail="Username or email already exists")
 
 
-# возврат одного
-async def get_user(session: AsyncSession, user_id: int):
+# возврат одного по id
+async def get_user_by_id(session: AsyncSession, user_id: int):
     result = await session.execute(select(User).filter(User.id == user_id))
+    return result.scalar_one_or_none()
+
+
+# возврат по имени
+async def get_user_by_username(session: AsyncSession, username: str):
+    result = await session.execute(select(User).filter(User.username == username))
     return result.scalar_one_or_none()
 
 
@@ -42,7 +48,7 @@ async def update_user(session: AsyncSession,
                       username: str,
                       hashed_password: str,
                       email: str):
-    user = await get_user(session, user_id)
+    user = await get_user_by_id(session, user_id)
     if user:
         user.username = username
         user.hashed_password = hashed_password
@@ -54,7 +60,7 @@ async def update_user(session: AsyncSession,
 
 # удаление пользователя
 async def delete_user(session: AsyncSession, user_id: int):
-    user = await get_user(session, user_id)
+    user = await get_user_by_id(session, user_id)
     if user:
         await session.delete(user)
         await session.commit()

@@ -24,6 +24,7 @@ class User(UserBase):
     class Config:
         orm_mode = True
 
+
 class UserLogin(BaseModel):
     username: str
     password: str

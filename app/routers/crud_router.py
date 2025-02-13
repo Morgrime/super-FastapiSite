@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from database.session import SessionLocal
-from database.crud import create_user, get_user, update_user, delete_user, get_all_users
+from database.crud import create_user, get_user_by_id, update_user, delete_user, get_all_users
 from schemas.user_scheme import UserCreate, UserUpdate, User, UserDelete
 
 router = APIRouter()
@@ -32,7 +32,7 @@ async def create_user_route(user: UserCreate,
 @router.get("/users/{user_id}", response_model=UserCreate, tags=["CRUD"])
 async def read_user_route(user_id: int,
                           session: AsyncSession = Depends(get_session)):
-    user = await get_user(session, user_id)
+    user = await get_user_by_id(session, user_id)
     if user is None:
         raise HTTPException(status_code=404, detail="User not found")
     return user
