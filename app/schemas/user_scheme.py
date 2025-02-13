@@ -1,10 +1,10 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 
 
 # база для внесения в бд 
 class UserBase(BaseModel):
     username: str
-    email: str
+    email: EmailStr
 
 
 # создание пользователя /crud.py create_user
