@@ -1,7 +1,7 @@
 from pydantic import BaseModel, EmailStr
 
 
-# база для внесения в бд 
+# база для внесения в бд
 class UserBase(BaseModel):
     username: str
     email: EmailStr
@@ -28,7 +28,8 @@ class UserLogin(BaseModel):
     password: str
 
 
-# модель для ответа на запросы по получению всех пользователей /crud_router.py get_users
+# модель для ответа на запросы по
+# получению всех пользователей /crud_router.py get_users
 class User(UserBase):
     id: int
 
