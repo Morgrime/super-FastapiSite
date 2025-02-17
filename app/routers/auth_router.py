@@ -4,6 +4,8 @@ from database.session import SessionLocal
 from database.crud import create_user, get_user_by_username
 from schemas.user_scheme import UserCreate, UserLogin
 from utils.security import hash_password, verify_password
+from utils.auth import create_access_token
+from datetime import timedelta
 
 
 router = APIRouter()
@@ -21,7 +23,7 @@ async def register_user(user: UserCreate,
     if existing_user:
         raise HTTPException(status_code=400,
                             detail="Username already registered")
-    
+
     hashed_password = hash_password(user.hashed_password)
     new_user = await create_user(session,
                                  user.username,
@@ -35,9 +37,16 @@ async def login_user(user: UserLogin,
                      session: AsyncSession = Depends(get_session)):
     db_user = await get_user_by_username(session, user.username)
     if not db_user:
-        raise HTTPException(status_code=400, detail="User does not exi")
-    
+        raise HTTPException(status_code=400, detail="User does not exist")
+
     if not verify_password(user.password, db_user.hashed_password):
         raise HTTPException(status_code=400, detail="Incorrect password")
-    
-    return {"msg": "Login successful"}
+
+    # JWT
+    access_token_expires = timedelta(minutes=30)
+    access_token = create_access_token(
+        data={"sub": db_user.username},
+        expires_delta=access_token_expires
+    )
+
+    return {"access_token": access_token, "token_type": "bearer"}
