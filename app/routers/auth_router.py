@@ -18,18 +18,20 @@ async def get_session():
 
 
 @router.post("/register", response_model=UserCreate, tags=["Authentication"])
-async def register_user(user: UserCreate,
+async def register_user(username: str = Form(),
+                        email: str = Form(),
+                        password: str = Form(),
                         session: AsyncSession = Depends(get_session)):
-    existing_user = await get_user_by_username(session, user.username)
+    existing_user = await get_user_by_username(session, username)
     if existing_user:
         raise HTTPException(status_code=400,
                             detail="Username already registered")
 
-    hashed_password = hash_password(user.hashed_password)
+    hashed_password = hash_password(password)
     new_user = await create_user(session,
-                                 user.username,
+                                 username,
                                  hashed_password,
-                                 user.email)
+                                 email)
     return new_user
 
 
