@@ -13,4 +13,3 @@ async def protected_route(current_user: dict = Depends(get_current_user)):
 @router.get('/test', tags=["Protected"])
 async def test_page(current_user: dict = Depends(get_current_user)):
     return 'Test page'
- 
