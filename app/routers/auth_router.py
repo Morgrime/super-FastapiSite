@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi import Form
 from sqlalchemy.ext.asyncio import AsyncSession
 from database.session import SessionLocal
 from database.crud import create_user, get_user_by_username
@@ -33,13 +34,14 @@ async def register_user(user: UserCreate,
 
 
 @router.post("/login", tags=["Authentication"])
-async def login_user(user: UserLogin,
+async def login_user(username: str = Form(),
+                     password: str = Form(),
                      session: AsyncSession = Depends(get_session)):
-    db_user = await get_user_by_username(session, user.username)
+    db_user = await get_user_by_username(session, username)
     if not db_user:
         raise HTTPException(status_code=400, detail="User does not exist")
 
-    if not verify_password(user.password, db_user.hashed_password):
+    if not verify_password(password, db_user.hashed_password):
         raise HTTPException(status_code=400, detail="Incorrect password")
 
     # JWT

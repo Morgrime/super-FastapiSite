@@ -3,7 +3,7 @@ from fastapi.security import OAuth2PasswordBearer
 from utils.auth import verify_token
 
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login")
 
 
 # проверка на вшивость (авторизован чел или нет)
