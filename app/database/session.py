@@ -10,3 +10,8 @@ SessionLocal = sessionmaker(
     bind=engine,
     class_=AsyncSession
 )
+
+
+async def get_session():
+    async with SessionLocal() as session:
+        yield session

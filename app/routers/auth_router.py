@@ -1,20 +1,15 @@
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi import Form
 from sqlalchemy.ext.asyncio import AsyncSession
-from database.session import SessionLocal
+from database.session import get_session
 from database.crud import create_user, get_user_by_username
-from schemas.user_scheme import UserCreate, UserLogin
+from schemas.user_scheme import UserCreate
 from utils.security import hash_password, verify_password
 from utils.auth import create_access_token
 from datetime import timedelta
 
 
 router = APIRouter()
-
-
-async def get_session():
-    async with SessionLocal() as session:
-        yield session
 
 
 @router.post("/register", response_model=UserCreate, tags=["Authentication"])
