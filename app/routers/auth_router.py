@@ -2,8 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException
 from fastapi import Form
 from sqlalchemy.ext.asyncio import AsyncSession
 from database.session import get_session
-from database.crud import create_user, get_user_by_username
-from schemas.user_scheme import UserCreate
+from database.crud import create_user, get_user_by_username, create_user_profile
+from schemas.user_scheme import UserCreate, UserResponse, UserWithProfileResponse, UserProfileResponse
 from utils.security import hash_password, verify_password
 from utils.auth import create_access_token
 from datetime import timedelta
@@ -12,7 +12,7 @@ from datetime import timedelta
 router = APIRouter()
 
 
-@router.post("/register", response_model=UserCreate, tags=["Authentication"])
+@router.post("/register", response_model=UserWithProfileResponse, tags=["Authentication"])
 async def register_user(username: str = Form(),
                         email: str = Form(),
                         password: str = Form(),
@@ -27,7 +27,23 @@ async def register_user(username: str = Form(),
                                  username,
                                  hashed_password,
                                  email)
-    return new_user
+    new_profile = await create_user_profile(session, new_user.id)
+
+    # Преобразование данных для ответа
+    profile_data = UserProfileResponse(
+        full_name=new_profile.full_name,
+        bio=new_profile.bio,
+        created_at=new_profile.created_at,
+        updated_at=new_profile.updated_at
+    )
+
+    response_data = UserWithProfileResponse(
+        username=new_user.username,
+        email=new_user.email,
+        profile=profile_data
+    )
+
+    return response_data
 
 
 @router.post("/login", tags=["Authentication"])

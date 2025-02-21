@@ -2,7 +2,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException
 from sqlalchemy.future import select
-from models.portfolio import User
+from models.models import User, UserProfile
+from datetime import datetime
 
 
 # создание пользователя
@@ -65,3 +66,18 @@ async def delete_user(session: AsyncSession, user_id: int):
         await session.delete(user)
         await session.commit()
     return user
+
+
+# создание профиля пользователя
+async def create_user_profile(session: AsyncSession, user_id: int):
+    new_profile = UserProfile(
+        user_id=user_id,
+        full_name="Не указано",  # значвение по-умолчанию
+        bio="Не указано",  # значение по умолчанию
+        created_at=datetime.now(),
+        updated_at=datetime.now()
+    )
+    session.add(new_profile)
+    await session.commit()
+    await session.refresh(new_profile)
+    return new_profile

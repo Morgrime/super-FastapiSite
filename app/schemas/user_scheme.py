@@ -1,5 +1,6 @@
 from pydantic import BaseModel, EmailStr
 from datetime import datetime
+from typing import Optional
 
 
 # база для внесения в бд
@@ -43,6 +44,26 @@ class UserResponse(UserBase):
     full_name: str | None
     created_at: datetime
     updated_at: datetime | None
+
+    class Config:
+        orm_mode = True
+
+
+# модель для создания профиля при регистрации
+# auth_router.py
+class UserProfileResponse(BaseModel):
+    full_name: Optional[str] = None
+    bio: Optional[str] = None
+    created_at: datetime
+    updated_at: Optional[datetime] = None
+
+
+# модель для возврата данных после регистрации
+# auth_router.py
+class UserWithProfileResponse(BaseModel):
+    username: str
+    email: str
+    profile: UserProfileResponse
 
     class Config:
         orm_mode = True
