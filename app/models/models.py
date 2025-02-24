@@ -36,4 +36,6 @@ class UserProfile(Base):
                                                  default=datetime.now(),
                                                  onupdate=datetime.now())
 
-    user: Mapped["User"] = relationship("User", back_populates="profile", lazy="joined")
+    user: Mapped["User"] = relationship("User",
+                                        back_populates="profile",
+                                        lazy="joined")
