@@ -11,7 +11,7 @@ router = APIRouter()
 
 
 # создание пользователя
-@router.post("/users/", response_model=UserCreate, tags=["CRUD"])
+@router.post("/users/", response_model=User, tags=["CRUD"])
 async def create_user_route(user: UserCreate,
                             session: AsyncSession = Depends(get_session)):
     hashed_password_str = str(user.hashed_password)
@@ -27,7 +27,7 @@ async def create_user_route(user: UserCreate,
 
 
 # получение пользователя по id
-@router.get("/users/{user_id}", response_model=UserCreate, tags=["CRUD"])
+@router.get("/users/{user_id}", response_model=User, tags=["CRUD"])
 async def read_user_route(user_id: int,
                           session: AsyncSession = Depends(get_session)):
     user = await get_user_by_id(session, user_id)
@@ -44,7 +44,7 @@ async def get_users(session: AsyncSession = Depends(get_session)):
 
 
 # обновление пользователя по id
-@router.put("/users/{user_id}", response_model=UserUpdate, tags=["CRUD"])
+@router.put("/users/{user_id}", response_model=User, tags=["CRUD"])
 async def update_user_route(user_id: int,
                             user_update: UserUpdate,
                             session: AsyncSession = Depends(get_session)):
