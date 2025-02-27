@@ -19,6 +19,12 @@ class UserUpdate(UserBase):
     hashed_password: str | int
 
 
+# изменение пароля /crud.py change_password
+class ChangePassword(BaseModel):
+    old_password: str
+    new_password: str
+
+
 # удаление пользователя по id /crud.py delete_user
 class UserDelete(BaseModel):
     detail: str
