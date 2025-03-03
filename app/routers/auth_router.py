@@ -4,8 +4,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from database.session import get_session
 from database.crud import create_user, get_user_by_username, create_user_profile
 from schemas.user_scheme import UserWithProfileResponse, UserProfileResponse
-from utils.security import hash_password, verify_password
+from utils.security import hash_password, verify_password, change_password
 from utils.auth import create_access_token
+from utils.dependencies import get_current_user
 from datetime import timedelta
 
 
@@ -67,3 +68,20 @@ async def login_user(username: str = Form(),
     )
 
     return {"access_token": access_token, "token_type": "bearer"}
+
+
+@router.post("/change_password", tags=["User"])
+async def change_password_route(
+    old_password: str = Form(...),
+    new_password: str = Form(...),
+    current_user: dict = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session)
+):
+    try:
+        user = await change_password(session,
+                                     current_user,
+                                     old_password,
+                                     new_password)
+        return user
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
