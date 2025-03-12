@@ -1,5 +1,5 @@
 from passlib.context import CryptContext
-from database.crud import get_user_by_username
+from app.database.crud import get_user_by_username
 from sqlalchemy.ext.asyncio import AsyncSession
 
 pwd_context = CryptContext(schemes=["bcrypt"])

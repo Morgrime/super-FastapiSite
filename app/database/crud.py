@@ -2,7 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException
 from sqlalchemy.future import select
-from models.models import User, UserProfile
+from app.models.models import User, UserProfile
 from datetime import datetime
 
 

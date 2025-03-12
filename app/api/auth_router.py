@@ -1,12 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi import Form
 from sqlalchemy.ext.asyncio import AsyncSession
-from database.session import get_session
-from database.crud import create_user, get_user_by_username, create_user_profile
-from schemas.user_scheme import UserWithProfileResponse, UserProfileResponse
-from utils.security import hash_password, verify_password, change_password
-from utils.auth import create_access_token
-from utils.dependencies import get_current_user
+from app.database.session import get_session
+from app.database.crud import (create_user,
+                           get_user_by_username,
+                           create_user_profile)
+from app.schemas.user_scheme import UserWithProfileResponse, UserProfileResponse
+from app.utils.security import hash_password, verify_password, change_password
+from app.utils.auth import create_access_token
+from app.utils.dependencies import get_current_user
 from datetime import timedelta
 
 
