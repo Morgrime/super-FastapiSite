@@ -47,12 +47,10 @@ async def get_all_users(session: AsyncSession):
 async def update_user(session: AsyncSession,
                       user_id: int,
                       username: str,
-                      hashed_password: str,
                       email: str):
     user = await get_user_by_id(session, user_id)
     if user:
         user.username = username
-        user.hashed_password = hashed_password
         user.email = email
         await session.commit()
         await session.refresh(user)

@@ -5,7 +5,7 @@ from app.database.crud import (
     create_user, get_user_by_id, update_user,
     delete_user, get_all_users
 )
-from app.schemas.user_scheme import UserCreate, UserUpdate, User, UserDelete
+from app.schemas.user_scheme import UserCreate, UserBase, User, UserDelete
 
 router = APIRouter()
 
@@ -46,12 +46,11 @@ async def get_users(session: AsyncSession = Depends(get_session)):
 # обновление пользователя по id
 @router.put("/users/{user_id}", response_model=User, tags=["CRUD"])
 async def update_user_route(user_id: int,
-                            user_update: UserUpdate,
+                            user_update: UserBase,
                             session: AsyncSession = Depends(get_session)):
     user = await update_user(session,
                              user_id,
                              user_update.username,
-                             user_update.hashed_password,
                              user_update.email)
     if user is None:
         raise HTTPException(status_code=404, detail="User not found")
