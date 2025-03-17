@@ -14,11 +14,6 @@ class UserCreate(UserBase):
     hashed_password: str | int
 
 
-# обновление данных пользователя /crud.py update_user
-class UserUpdate(UserBase):
-    hashed_password: str | int
-
-
 # изменение пароля /crud.py change_password
 class ChangePassword(BaseModel):
     old_password: str
