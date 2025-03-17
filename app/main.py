@@ -1,5 +1,4 @@
 from fastapi import FastAPI
-from uvicorn import run
 from contextlib import asynccontextmanager
 from app.database.session import engine
 from app.models.base import Base
@@ -17,7 +16,3 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan, debug=True)
 app.include_router(main_router)
-
-
-if __name__ == "__main__":
-    run(app)

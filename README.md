@@ -21,3 +21,5 @@
 - [ ] реакция на посты (может быть отзывы, лайки и дизлайки и тд)
 - [ ] переезд на postgre
 
+# Запуск из директориии super-FastapiSite
+uvicorn app.main:app --reload

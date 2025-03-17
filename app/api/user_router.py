@@ -5,7 +5,8 @@ from sqlalchemy.orm import selectinload
 from app.utils.dependencies import get_current_user
 from app.database.session import get_session
 from app.models.models import User
-from app.schemas.user_scheme import UserProfileResponse, UserWithProfileResponse
+from app.schemas.user_scheme import (UserProfileResponse,
+                                     UserWithProfileResponse)
 
 
 router = APIRouter()
