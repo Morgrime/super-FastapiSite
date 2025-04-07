@@ -5,7 +5,7 @@ from fastapi import status
 def test_register_user(client):
     """Test user registration endpoint"""
     response = client.post(
-        "/register",
+        "/api/auth/register",
         data={
             "username": "newuser",
             "email": "newuser@example.com",
@@ -22,7 +22,7 @@ def test_register_user(client):
 def test_register_duplicate_username(client, test_user):
     """Test registration with duplicate username"""
     response = client.post(
-        "/register",
+        "/api/auth/register",
         data={
             "username": "testuser",  # Same as test_user
             "email": "another@example.com",
@@ -36,7 +36,7 @@ def test_register_duplicate_username(client, test_user):
 def test_login_user(client, test_user):
     """Test user login endpoint"""
     response = client.post(
-        "/login",
+        "/api/auth/login",
         data={
             "username": "testuser",
             "password": "testpassword"
@@ -52,7 +52,7 @@ def test_login_invalid_credentials(client, test_user):
     """Test login with invalid credentials"""
     # First ensure the user exists
     response = client.post(
-        "/register",
+        "/api/auth/register",
         data={
             "username": "invaliduser",
             "email": "invalid@example.com",
@@ -63,7 +63,7 @@ def test_login_invalid_credentials(client, test_user):
     
     # Now try to login with wrong password
     response = client.post(
-        "/login",
+        "/api/auth/login",
         data={
             "username": "invaliduser",
             "password": "wrongpassword"
@@ -76,7 +76,7 @@ def test_login_invalid_credentials(client, test_user):
 def test_login_nonexistent_user(client):
     """Test login with nonexistent user"""
     response = client.post(
-        "/login",
+        "/api/auth/login",
         data={
             "username": "nonexistent",
             "password": "password123"
@@ -89,7 +89,7 @@ def test_login_nonexistent_user(client):
 def test_change_password(auth_client, test_user):
     """Test changing password"""
     response = auth_client.post(
-        "/change_password",
+        "/api/auth/change_password",
         data={
             "old_password": "testpassword",
             "new_password": "newpassword123"
@@ -98,23 +98,25 @@ def test_change_password(auth_client, test_user):
     assert response.status_code == status.HTTP_200_OK
     
     # Verify we can login with the new password
-    login_response = auth_client.post(
-        "/login",
+    response = auth_client.post(
+        "/api/auth/login",
         data={
             "username": "testuser",
             "password": "newpassword123"
         }
     )
-    assert login_response.status_code == status.HTTP_200_OK
+    assert response.status_code == status.HTTP_200_OK
+    assert "access_token" in response.json()
 
 
 def test_change_password_invalid_old_password(auth_client):
     """Test changing password with invalid old password"""
     response = auth_client.post(
-        "/change_password",
+        "/api/auth/change_password",
         data={
             "old_password": "wrongpassword",
             "new_password": "newpassword123"
         }
     )
-    assert response.status_code == status.HTTP_400_BAD_REQUEST 
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert "Invalid old password" in response.json()["detail"] 

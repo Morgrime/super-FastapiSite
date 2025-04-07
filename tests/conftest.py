@@ -63,7 +63,7 @@ async def setup_database():
 async def test_user(client):
     # Register a test user
     response = client.post(
-        "/register",
+        "/api/auth/register",
         data={
             "username": "testuser",
             "email": "test@example.com",

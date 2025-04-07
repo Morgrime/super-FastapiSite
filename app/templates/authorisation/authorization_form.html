@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Авторизация</title>
-    <link rel="stylesheet" href="../css/authorization_form.css">
+    <link rel="stylesheet" href="{{ url_for('static', path='css/authorization_form.css') }}">
 </head>
 <body>
   <div class="login">
@@ -13,21 +13,52 @@
         <h1>Login</h1>
       </div>
 
-      <div class="login-form">
+      <form id="loginForm" class="login-form">
         <div class="control-group">
-        <input type="text" class="login-field" value="" placeholder="username" id="login-name">
+        <input type="text" class="login-field" value="" placeholder="username" id="login-name" name="username" required>
         <label class="login-field-icon fui-user" for="login-name"></label>
         </div>
 
         <div class="control-group">
-        <input type="password" class="login-field" value="" placeholder="password" id="login-pass">
+        <input type="password" class="login-field" value="" placeholder="password" id="login-pass" name="password" required>
         <label class="login-field-icon fui-lock" for="login-pass"></label>
         </div>
 
-        <a class="btn btn-primary btn-large btn-block" href="#">login</a>
-        <a class="login-link" href="#">Lost your password?</a>
-      </div>
+        <button type="submit" class="btn btn-primary btn-large btn-block">Login</button>
+        <a class="login-link" href="/register">Нет аккаунта? Зарегистрироваться</a>
+      </form>
     </div>
   </div>
+
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const formData = new FormData();
+      formData.append('username', document.getElementById('login-name').value);
+      formData.append('password', document.getElementById('login-pass').value);
+
+      try {
+        const response = await fetch('/api/auth/login', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          // Store the token in localStorage
+          localStorage.setItem('token', data.access_token);
+          // Redirect to home page or dashboard
+          window.location.href = '/';
+        } else {
+          const error = await response.json();
+          alert(error.detail || 'Login failed');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred during login');
+      }
+    });
+  </script>
 </body>
 </html>
