@@ -3,9 +3,8 @@ from fastapi import Form
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.database.session import get_session
 from app.database.crud import (create_user,
-                           get_user_by_username,
-                           create_user_profile)
-from app.schemas.user_scheme import UserWithProfileResponse, UserProfileResponse
+                               get_user_by_username,
+                               create_user_profile)
 from app.utils.security import hash_password, verify_password, change_password
 from app.utils.auth import create_access_token
 from app.utils.dependencies import get_current_user
@@ -16,7 +15,6 @@ router = APIRouter()
 
 
 @router.post("/register",
-             response_model=UserWithProfileResponse,
              tags=["Authentication"])
 async def register_user(username: str = Form(),
                         email: str = Form(),
@@ -32,23 +30,9 @@ async def register_user(username: str = Form(),
                                  username,
                                  hashed_password,
                                  email)
-    new_profile = await create_user_profile(session, new_user.id)
+    await create_user_profile(session, new_user.id)
 
-    # Преобразование данных для ответа
-    profile_data = UserProfileResponse(
-        full_name=new_profile.full_name,
-        bio=new_profile.bio,
-        created_at=new_profile.created_at,
-        updated_at=new_profile.updated_at
-    )
-
-    response_data = UserWithProfileResponse(
-        username=new_user.username,
-        email=new_user.email,
-        profile=profile_data
-    )
-
-    return response_data
+    return {"status": "success", "message": "Registration successful!"}
 
 
 @router.post("/login", tags=["Authentication"])
