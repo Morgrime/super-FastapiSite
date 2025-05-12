@@ -8,7 +8,7 @@ main_router = APIRouter()
 
 main_router.include_router(routing_router)
 main_router.include_router(crud_router)
-main_router.include_router(auth_router)
+main_router.include_router(auth_router, prefix="/api/auth")
 main_router.include_router(user_router)
 
 __all__ = ["main_router"]

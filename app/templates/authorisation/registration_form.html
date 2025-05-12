@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='css/authorization_form.css') }}">
+</head>
+<body>
+  <div class="login">
+    <div class="login-screen">
+      <div class="app-title">
+        <h1>Регистрация</h1>
+      </div>
+
+      <form id="registerForm" class="login-form">
+        <div class="control-group">
+        <input type="text" class="login-field" value="" placeholder="username" id="register-username" name="username" required>
+        <label class="login-field-icon fui-user" for="register-username"></label>
+        </div>
+
+        <div class="control-group">
+        <input type="email" class="login-field" value="" placeholder="email" id="register-email" name="email" required>
+        <label class="login-field-icon fui-user" for="register-email"></label>
+        </div>
+
+        <div class="control-group">
+        <input type="password" class="login-field" value="" placeholder="password" id="register-password" name="password" required>
+        <label class="login-field-icon fui-lock" for="register-password"></label>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-large btn-block">Зарегистрироваться</button>
+        <a class="login-link" href="/login">Уже есть аккаунт? Войти</a>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const formData = new FormData();
+      formData.append('username', document.getElementById('register-username').value);
+      formData.append('email', document.getElementById('register-email').value);
+      formData.append('password', document.getElementById('register-password').value);
+
+      try {
+        const response = await fetch('/api/auth/register', {
+          method: 'POST',
+          body: formData
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          alert('Регистрация успешна! Теперь вы можете войти.');
+          window.location.href = '/login';
+        } else {
+          const error = await response.json();
+          alert(error.detail || 'Ошибка регистрации');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Произошла ошибка при регистрации');
+      }
+    });
+  </script>
+</body>
+</html> 
